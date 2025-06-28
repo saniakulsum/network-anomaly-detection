@@ -1,0 +1,20 @@
+
+🔍 NETWORK ANOMALY DETECTION REPORT
+=====================================
+Analysis Date: 2025-06-28 18:59:28
+Input File: uploaded_file.pcap
+
+📊 STATISTICS:
+- Total Packets: 58
+- Normal Packets: 52
+- Anomalous Packets: 6
+- Anomaly Rate: 10.34%
+
+🏷️ DETECTED THREAT TYPES:
+- Unknown Behavioral Anomaly: 4 occurrences
+- Fragmentation Attack: 2 occurrences
+- High Payload Entropy: 2 occurrences
+- Jumbo Packet Attack: 1 occurrences
+
+🎯 RECOMMENDATION:
+Further investigation recommended for detected anomalies.
