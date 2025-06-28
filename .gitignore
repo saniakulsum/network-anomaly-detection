@@ -1,24 +1,25 @@
 # Ignore virtual environments
 honeypot_env/
-venv/
-.env/
+myvenv/
+venv38/
+cleanenv/
 
-# Ignore __pycache__
+# Ignore system and cache files
 __pycache__/
 *.pyc
+.DS_Store
 
-# Ignore large data files
+# Ignore PCAP and heavy data files
 *.pcap
 *.pcapng
 
-# Ignore system files
-.DS_Store
-
-# Ignore environment files
-.env
-*.env
-
-# Ignore data outputs
+# Ignore outputs and logs
 *.csv
-*.log
 *.txt
+*.log
+*.dot
+*.ps
+
+# VS Code
+.vscode/
+
