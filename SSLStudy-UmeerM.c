@@ -281,7 +281,7 @@ int main(int argc, char *argv[]){
 
 
 
-	printf("Data Analyzer by Umeer Mohammad - Student Code: 4748549\n");
+
 
 
 	//READ DATA FROM FILE

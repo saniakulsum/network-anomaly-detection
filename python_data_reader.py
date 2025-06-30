@@ -33,7 +33,7 @@ textTracer = "###[ SSL/TLS ]###"
 outFileName = "rawData.txt"
 
 print("\U0001F50D Advanced Network Anomaly Detection System")
-print("Data Parser by Umeer Mohammad - Student Code: 4748549\n")
+
 
 if args.honeypot:
     print("\n================> 🛡️ HONEYPOT MODE ENABLED <=================")
@@ -146,8 +146,35 @@ data = []
 packet_details = []
 port_frequencies = {}
 length_stats = []
+# === SIGNATURE DETECTION FUNCTION ===
+def detect_signatures(packet):
+    flags = []
+    try:
+        if packet.haslayer(DNS):
+            dns_layer = packet[DNS]
+            if dns_layer.qr == 0 and dns_layer.qdcount > 0:
+                flags.append("DNS_TUNNELING")
+        if packet.haslayer(TCP):
+            tcp_layer = packet[TCP]
+            if packet.haslayer(Raw):
+                raw_payload = bytes(packet[Raw]).decode(errors="ignore").lower()
+                if "ssh" in raw_payload and (tcp_layer.sport > 1024 or tcp_layer.dport > 1024):
+                    flags.append("SSH_TUNNELING")
+            if tcp_layer.flags == 0x11 and tcp_layer.seq > 0 and tcp_layer.ack > 0:
+                flags.append("TCP_SESSION_HIJACK")
+            if tcp_layer.flags == 0x18 and len(packet) < 50:
+                flags.append("SLOWLORIS_ATTACK")
+        if packet.haslayer(Raw):
+            raw_payload = bytes(packet[Raw]).decode(errors="ignore").lower()
+            for word in SUSPICIOUS_KEYWORDS:
+                if word in raw_payload:
+                    flags.append(f"KEYWORD:{word}")
+    except:
+        pass
+    return flags
 
 print("\n🔄 Processing packets...")
+signature_flags_list = []
 
 for counter, packet in enumerate(packets, 1):
     if counter % 100 == 0:
@@ -203,7 +230,8 @@ for counter, packet in enumerate(packets, 1):
         'raw_sport': sport,
         'raw_dport': dport
     }
-    
+    detected_flags = detect_signatures(packet)
+    signature_flags_list.append("; ".join(detected_flags))
     data.append([length, sport, dport, is_tls, protocol, has_payload, tcp_flags, udp_flag, icmp_flag,entropy])
     packet_details.append(packet_info)
 
@@ -238,6 +266,8 @@ df['anomaly_score'] = clf.decision_function(df[features_for_ml])
 
 # Combine with packet details
 result_df = pd.concat([details_df, df], axis=1)
+result_df['signature_flags'] = signature_flags_list
+
 
 print("✅ Machine Learning Analysis Complete!\n")
 
@@ -359,6 +389,12 @@ if len(anomalous_packets) > 0:
         print(f"   📏 Length: {packet['raw_length']} bytes")
         print(f"   🔒 TLS Encrypted: {'Yes' if packet['is_tls'] else 'No'}")
         print(f"   ⏰ Timestamp: {packet['timestamp']}")
+        # Show detected signatures if any
+        if packet['signature_flags']:
+            print(f"   🚩 Signature Detections: {packet['signature_flags']}")
+        else:
+            print(f"   🚩 Signature Detections: None")
+
         
         print(f"   🏷️  DETECTED ANOMALY TYPES:")
         for anomaly_type in anomaly_types:

@@ -32,7 +32,6 @@ inputFileName = "testing.pcap"
 outFileName = "rawData.txt"
 
 print("\U0001F50D Advanced Network Anomaly Detection System")
-print("Data Parser by Umeer Mohammad - Student Code: 4748549\n")
 
 if args.honeypot:
     print("\n================> 🛡️ HONEYPOT MODE ENABLED <=================")
