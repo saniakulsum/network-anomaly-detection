@@ -26,7 +26,7 @@ git clone <repository_link>
 3. Navigate to the project directory:
 
 ```bash
-cd ~/honeypot_project
+cd ~/honeypot_project/Task1
 ```
 
 4. (Recommended) Create and activate a virtual environment:
@@ -51,7 +51,7 @@ Run the following steps inside your **Ubuntu WSL terminal**:
 1. Navigate to your project:
 
 ```bash
-cd ~/honeypot_project
+cd ~/honeypot_project/Task1
 ```
 
 2. Activate your virtual environment:
